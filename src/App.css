@@ -1,0 +1,283 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --bg-color: #000000;
+  --btn-dark: #333333;
+  --btn-grey: #a5a5a5;
+  --btn-orange: #ff9f0a;
+  --text-white: #ffffff;
+  --accent-color: #1c1c1e;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  /* font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+    Arial, sans-serif; */
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+  overflow: hidden; /* Ngăn scroll toàn trang */
+}
+
+/* Container chính chiếm toàn bộ màn hình */
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  color: var(--text-white);
+}
+
+/* --- KHU VỰC MÁY TÍNH (Bên trái) --- */
+.calculator-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  justify-content: flex-end; /* Đẩy nội dung xuống dưới giống iOS */
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.display {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 20px 10px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.input-text {
+  font-size: clamp(3.5rem, 10vw, 6rem); /* Tự động co giãn cỡ chữ */
+  font-weight: 400;
+  text-align: right;
+  word-break: break-all;
+  line-height: 1;
+}
+.input-text.text-max-length {
+  font-size: clamp(2.5rem, 10vw, 6rem);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  width: 100%;
+}
+
+.btn {
+  font-family: "Roboto", sans-serif;
+  aspect-ratio: 1/1; /* Giữ nút luôn vuông/tròn */
+  border-radius: 50%;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--text-white);
+  transition:
+    filter 0.2s,
+    transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:active {
+  filter: brightness(1.5);
+  transform: scale(0.95);
+}
+
+.btn-dark {
+  background-color: var(--btn-dark);
+}
+.btn-grey {
+  background-color: var(--btn-grey);
+  color: #000;
+}
+.btn-orange {
+  background-color: var(--btn-orange);
+  font-size: 2.5rem;
+}
+
+.btn-zero {
+  /* grid-column: span 2; */
+  aspect-ratio: auto;
+  border-radius: 100px;
+  justify-content: center;
+  /* padding-left: 15%; */
+}
+.open-history {
+  width: fit-content;
+  height: auto;
+  position: absolute;
+  left: 0;
+  top: -10%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.open-history-btn {
+  background-color: transparent;
+  color: var(--text-white);
+  border: none;
+}
+.close-history-btn {
+  background-color: transparent;
+  color: var(--btn-orange);
+}
+.history-text {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+}
+
+/* --- KHU VỰC LỊCH SỬ (Bên phải) --- */
+.history-section {
+  width: 400px;
+  background-color: var(--accent-color);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #333;
+  padding: 20px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.history-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.clear-btn {
+  background: none;
+  color: var(--btn-orange);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.summary-box {
+  margin: 20px 0;
+  background: linear-gradient(135deg, #ff9f0a, #ffb340);
+  padding: 20px;
+  border-radius: 15px;
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-box strong {
+  font-size: 1.4rem;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Custom Scrollbar */
+.history-list::-webkit-scrollbar {
+  width: 6px;
+}
+.history-list::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #2c2c2e;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.history-item:hover {
+  background: #3a3a3c;
+}
+
+.history-checkbox {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--btn-orange);
+  cursor: pointer;
+}
+
+.history-content {
+  flex: 1;
+  cursor: pointer;
+  text-align: right;
+}
+
+.hist-exp {
+  color: #8e8e93;
+  font-size: 0.9rem;
+  display: block;
+}
+.hist-res {
+  color: var(--btn-orange);
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+/* --- RESPONSIVE (Cho điện thoại) --- */
+@media (max-width: 850px) {
+  .container {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .calculator-wrapper {
+    width: 100%;
+    min-height: 100vh; /* Máy tính chiếm trọn màn hình đầu tiên */
+    padding: 20px;
+  }
+
+  .history-section {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #333;
+    min-height: 100vh;
+  }
+  .history-checkbox {
+    width: 28px;
+    height: 28px;
+  }
+
+  .btn {
+    font-size: 2rem;
+  }
+  .close-history-btn,
+  .open-history-btn {
+    font-size: 2.5rem;
+  }
+}
