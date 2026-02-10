@@ -1,391 +1,7 @@
-// import React, { useState, useEffect, useRef } from "react";
-// import "./App.css";
-
-// import { HiBookOpen, HiMiniArrowLeftStartOnRectangle } from "react-icons/hi2";
-// import { ImCheckboxChecked, ImCheckboxUnchecked, ImBin } from "react-icons/im";
-
-// function App() {
-//   const [input, setInput] = useState("");
-//   const [history, setHistory] = useState(() => {
-//     const saved = localStorage.getItem("ios_calculator_history");
-//     return saved ? JSON.parse(saved) : [];
-//   });
-//   const [selectedSum, setSelectedSum] = useState(0);
-//   const [lastOp, setLastOp] = useState(null);
-//   const [isFinished, setIsFinished] = useState(false);
-//   const [isOpenHistory, setIsOpenHistory] = useState(false);
-//   const [checkedAll, setCheckedAll] = useState(false);
-//   const [isEdited, setIsEdited] = useState(false);
-//   const [idOperation, setIdOperation] = useState(null);
-//   const [isChangeSign, setIsChangeSign] = useState(false);
-
-//   const pressTimerRef = useRef(null);
-
-//   // --- HÀM FORMAT HIỂN THỊ (VIỆT NAM STYLE) ---
-//   const formatDisplay = (str) => {
-//     if (!str) return "0";
-
-//     // Tách chuỗi theo toán tử để format từng số riêng biệt
-//     const parts = str.split(/([÷×\-+])/);
-
-//     return parts
-//       .map((part) => {
-//         if (/[÷×\-+]/.test(part)) return ` ${part} `; // Thêm khoảng cách cho toán tử
-//         if (!part) return "";
-
-//         // Xử lý số thập phân và hàng nghìn
-//         const [integer, decimal] = part.split(".");
-//         const formattedInt = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-//         return decimal !== undefined
-//           ? `${formattedInt},${decimal}`
-//           : formattedInt;
-//       })
-//       .join("");
-//   };
-
-//   useEffect(() => {
-//     localStorage.setItem("ios_calculator_history", JSON.stringify(history));
-//   }, [history]);
-
-//   useEffect(() => {
-//     const sum = history
-//       .filter((item) => item.checked)
-//       .reduce((acc, curr) => acc + parseFloat(curr.result), 0);
-//     setSelectedSum(sum);
-//   }, [history]);
-
-//   const handlePercentage = () => {
-//     if (!input) return;
-
-//     // Tìm số cuối cùng đang nhập (bao gồm cả số thập phân)
-//     const tokens = input.split(/([÷×\-+])/);
-//     let lastNumberStr = tokens.pop();
-
-//     // Nếu token cuối là rỗng (người dùng vừa bấm toán tử xong rồi bấm %), thoát
-//     if (lastNumberStr === "" && tokens.length > 0) return;
-
-//     const lastNumber = parseFloat(lastNumberStr);
-//     if (isNaN(lastNumber)) return;
-
-//     const prefix = tokens.join(""); // Phần còn lại của biểu thức (ví dụ: "100+")
-//     const operator = tokens[tokens.length - 1];
-
-//     let percentValue;
-
-//     // Kiểm tra ngữ cảnh: Nếu là phép cộng hoặc trừ
-//     if (operator === "+" || operator === "-") {
-//       // Tìm con số đứng trước toán tử đó (ví dụ: lấy số 100 trong "100+")
-//       const previousNumberStr = tokens[tokens.length - 2];
-//       const previousNumber = parseFloat(previousNumberStr);
-
-//       if (!isNaN(previousNumber)) {
-//         // Logic iOS: 100 + 10% = 100 + (100 * 0.1)
-//         percentValue = (previousNumber * lastNumber) / 100;
-//       } else {
-//         percentValue = lastNumber / 100;
-//       }
-//     } else {
-//       // Trường hợp nhân/chia hoặc chỉ có 1 số: x% = x / 100
-//       percentValue = lastNumber / 100;
-//     }
-
-//     // Cập nhật lại input: Thay thế số cuối cùng bằng giá trị phần trăm đã tính
-//     setInput(prefix + percentValue.toString());
-//   };
-
-//   const handleChangeSign = () => {
-//     if (!input || input === "0") return;
-
-//     // Tách chuỗi thành các phần (số và toán tử)
-//     // Ví dụ: "100+50" -> ["100", "+", "50"]
-//     const tokens = input.split(/([÷×\-+])/);
-//     let lastToken = tokens.pop(); // Lấy số cuối cùng ("50")
-
-//     if (lastToken === "" && tokens.length > 0) {
-//       // Nếu người dùng vừa bấm toán tử xong (VD: "100+"), không làm gì hoặc đảo dấu số trước đó
-//       return;
-//     }
-
-//     // Đảo dấu số cuối cùng
-//     if (lastToken.startsWith("-")) {
-//       lastToken = lastToken.slice(1); // Đang âm thành dương
-//     } else {
-//       lastToken = "-" + lastToken; // Đang dương thành âm
-//     }
-
-//     // Ghép lại chuỗi
-//     const newReflectedInput = tokens.join("") + lastToken;
-//     setInput(newReflectedInput);
-//     setIsFinished(false);
-//   };
-
-//   const handleClick = (value) => {
-//     const isNumber = /\d|\./.test(value);
-//     const isOperator = /[÷×\-+]/.test(value);
-
-//     if (value === "AC") {
-//       setInput("");
-//       setLastOp(null);
-//       setIsFinished(false);
-//     } else if (value === "C") {
-//       setInput(input.slice(0, -1));
-//       setIsFinished(false);
-//     } else if (value === "%") {
-//       handlePercentage();
-//       setIsFinished(false);
-//     } else if (value === "+/-") {
-//       handleChangeSign();
-//       setIsFinished(false);
-//     } else if (value === "=") {
-//       calculateResult();
-//     } else if (isFinished) {
-//       if (isNumber) {
-//         setInput(value === "." ? "0." : value);
-//         setLastOp(null);
-//       } else if (isOperator) {
-//         setInput(input + value);
-//       }
-//       setIsFinished(false);
-//     } else {
-//       // Ngăn chặn nhập nhiều dấu chấm trong một số
-//       if (value === ".") {
-//         const lastNumber = input.split(/[÷×\-+]/).pop();
-//         if (lastNumber.includes(".")) return;
-//         if (!lastNumber) {
-//           setInput(input + "0.");
-//           return;
-//         }
-//       }
-//       setInput(input + value);
-//     }
-//   };
-
-//   const calculateResult = () => {
-//     try {
-//       if (!input && !isFinished) return;
-
-//       let expressionToEval = input.replace(/×/g, "*").replace(/÷/g, "/");
-
-//       // Logic lặp lại phép tính cuối cùng (Constant Calculation)
-//       if (isFinished && lastOp) {
-//         expressionToEval = `${input}${lastOp.operator}${lastOp.operand}`;
-//       } else {
-//         const match = expressionToEval.match(/([+\-*/])(\d+\.?\d*)$/);
-//         if (match) {
-//           setLastOp({ operator: match[1], operand: match[2] });
-//         }
-//       }
-
-//       // eslint-disable-next-line no-new-func
-//       const evalResult = Function(
-//         '"use strict";return (' + expressionToEval + ")",
-//       )();
-//       const finalResult = Number(evalResult.toFixed(10)).toString();
-
-//       if (isEdited) {
-//         // --- LOGIC CẬP NHẬT (EDIT) ---
-//         const updatedHistory = history.map((op) => {
-//           if (op.id === idOperation) {
-//             // Trả về object đã cập nhật kết quả mới
-//             return { ...op, expression: input, result: finalResult };
-//           }
-//           return op;
-//         });
-
-//         setHistory(updatedHistory);
-//         setIsEdited(false); // Tắt chế độ chỉnh sửa
-//         setIdOperation(null); // Xóa ID đang chọn
-//       } else {
-//         // --- LOGIC THÊM MỚI (NEW) ---
-//         const newHistoryItem = {
-//           id: Date.now(),
-//           expression: input,
-//           result: finalResult,
-//           checked: false,
-//         };
-//         setHistory([newHistoryItem, ...history]);
-//       }
-
-//       // Cập nhật màn hình hiển thị sau khi tính (áp dụng cho cả Edit và New)
-//       setInput(finalResult);
-//       setIsFinished(true);
-//     } catch (error) {
-//       console.error("Lỗi tính toán:", error);
-//       setInput("Error");
-//       setIsFinished(false);
-//     }
-//   };
-
-//   const toggleCheck = (id) => {
-//     setHistory(
-//       history.map((item) =>
-//         item.id === id ? { ...item, checked: !item.checked } : item,
-//       ),
-//     );
-//   };
-
-//   const clearHistory = () => {
-//     if (window.confirm("Xóa lịch sử?")) setHistory([]);
-//   };
-
-//   const handleSelected = (arr) => {
-//     arr.map((item) => (item.checked = !item.checked));
-//     setCheckedAll((prve) => !prve);
-//     toggleCheck();
-//   };
-
-//   const handleOpenHistory = () => {
-//     setIsOpenHistory((prve) => !prve);
-//     if (!isOpenHistory) setInput("");
-//   };
-
-//   const handleEditOperation = (item) => {
-//     setInput(item.expression);
-//     setIdOperation(item.id);
-//     setIsEdited(true);
-//     setIsFinished(false);
-//     setIsOpenHistory(false);
-//     if (navigator.vibrate) navigator.vibrate(50);
-//   };
-
-//   const handleTouchStart = (item) => {
-//     if (pressTimerRef.current) {
-//       clearTimeout(pressTimerRef.current);
-//     }
-//     pressTimerRef.current = setTimeout(() => {
-//       setInput(item.expression);
-//       setIdOperation(item.id);
-//       setIsEdited(true);
-//       setIsFinished(false);
-//       setIsOpenHistory(false);
-//       if (navigator.vibrate) navigator.vibrate(50);
-//     }, 600);
-//   };
-//   const handleTouchEnd = () => {
-//     if (pressTimerRef.current) {
-//       clearTimeout(pressTimerRef.current);
-//       pressTimerRef.current = null;
-//     }
-//   };
-
-//   // Nút hiển thị là dấu phẩy nhưng giá trị truyền vào là dấu chấm
-//   const buttons = [
-//     "AC",
-//     "C",
-//     "%",
-//     "+/-",
-//     "7",
-//     "8",
-//     "9",
-//     "÷",
-//     "4",
-//     "5",
-//     "6",
-//     "×",
-//     "1",
-//     "2",
-//     "3",
-//     "-",
-//     "0",
-//     ".",
-//     "=",
-//     "+",
-//   ];
-
-//   return (
-//     <div className="container">
-//       {isOpenHistory ? (
-//         <div className="history-section">
-//           <div className="history-header">
-//             <h3>Lịch sử</h3>
-//             {history.length > 0 && (
-//               <>
-//                 <button onClick={clearHistory} className="clear-btn btn">
-//                   <ImBin />
-//                 </button>
-//                 <button
-//                   onClick={() => handleSelected(history)}
-//                   className="clear-btn btn"
-//                 >
-//                   {checkedAll ? <ImCheckboxChecked /> : <ImCheckboxUnchecked />}
-//                 </button>
-//               </>
-//             )}
-//             <button className="close-history btn" onClick={handleOpenHistory}>
-//               <HiMiniArrowLeftStartOnRectangle />
-//             </button>
-//           </div>
-//           <div className="summary-box">
-//             <span>Tổng đã chọn:</span>
-//             <strong>{formatDisplay(selectedSum.toFixed(2).toString())}</strong>
-//           </div>
-//           <div className="history-list">
-//             {history.map((item) => (
-//               <div key={item.id} className="history-item">
-//                 <input
-//                   type="checkbox"
-//                   checked={item.checked}
-//                   onChange={() => toggleCheck(item.id)}
-//                   className="history-checkbox"
-//                 />
-//                 <div
-//                   className="history-content"
-//                   onDoubleClick={() => handleEditOperation(item)}
-//                   onTouchStart={() => handleTouchStart(item)}
-//                   onTouchEnd={handleTouchEnd}
-//                   onTouchMove={handleTouchEnd}
-//                 >
-//                   <span className="hist-exp">
-//                     {formatDisplay(item.expression)}
-//                   </span>
-//                   <span className="hist-res">
-//                     = {formatDisplay(item.result)}
-//                   </span>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       ) : (
-//         <div className="calculator-wrapper">
-//           <div className="display">
-//             <button className="open-history btn" onClick={handleOpenHistory}>
-//               <HiBookOpen />
-//             </button>
-//             <div className="input-text">{formatDisplay(input)}</div>
-//           </div>
-//           <div className="keypad">
-//             {buttons.map((btn, i) => {
-//               let className =
-//                 "btn " +
-//                 (["÷", "×", "-", "+", "="].includes(btn)
-//                   ? "btn-orange"
-//                   : ["AC", "C", "%", "+/-"].includes(btn)
-//                     ? "btn-grey"
-//                     : "btn-dark");
-//               if (btn === "0") className += " btn-zero";
-//               return (
-//                 <button
-//                   key={i}
-//                   className={className}
-//                   onClick={() => handleClick(btn)}
-//                 >
-//                   {btn === "." ? "," : btn}
-//                 </button>
-//               );
-//             })}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default App;
-import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
+import DeviceFingerprint from "./utils/deviceFingerprint";
 
+import React, { useState, useEffect, useRef } from "react";
 import { HiBookOpen, HiMiniArrowLeftStartOnRectangle } from "react-icons/hi2";
 import { ImCheckboxChecked, ImCheckboxUnchecked, ImBin } from "react-icons/im";
 
@@ -402,10 +18,14 @@ function App() {
   const [checkedAll, setCheckedAll] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const [idOperation, setIdOperation] = useState(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const pressTimerRef = useRef(null);
 
   const decimal = selectedSum.toString().includes(".");
+
+  const { getDeviceID } = DeviceFingerprint;
 
   // --- FORMAT HIỂN THỊ VIỆT NAM ---
   const formatDisplay = (str) => {
@@ -434,6 +54,7 @@ function App() {
 
   // --- TÍNH TỔNG CÁC MỤC ĐÃ CHỌN ---
   useEffect(() => {
+    if (history.length === 0) return;
     const sum = history
       .filter((item) => item.checked)
       .reduce((acc, curr) => acc + parseFloat(curr.result || 0), 0);
@@ -494,6 +115,43 @@ function App() {
     setInput(tokens.join("") + lastToken);
   };
 
+  const handleBackspace = () => {
+    if (input.length > 0) {
+      setInput(input.slice(0, -1)); // Cắt bỏ ký tự cuối cùng
+      // Nếu xóa hết thì reset về trạng thái chưa xong để hiện số 0 nếu cần
+      if (input.length === 1) {
+        setIsFinished(false);
+      }
+    }
+  };
+
+  // Bắt đầu chạm
+  const onTouchStartDisplay = (e) => {
+    setTouchEnd(null); // Reset điểm kết thúc
+    setTouchStart(e.targetTouches[0].clientX); // Lưu tọa độ ngang (X) ban đầu
+  };
+
+  // Di chuyển ngón tay (Cập nhật liên tục điểm cuối)
+  const onTouchMoveDisplay = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  // Kết thúc chạm -> Tính toán
+  const onTouchEndDisplay = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50; // Vuốt sang trái > 50px
+    const isRightSwipe = distance < -50; // Vuốt sang phải > 50px
+
+    // iOS Calculator cho phép vuốt cả 2 bên đều là xóa
+    if (isLeftSwipe || isRightSwipe) {
+      handleBackspace();
+      // Hiệu ứng rung nhẹ (Haptic) nếu có (Android)
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+  };
+
   // --- XỬ LÝ CLICK NÚT ---
   const handleClick = (value) => {
     const isNumber = /\d|\./.test(value);
@@ -507,7 +165,7 @@ function App() {
       setIsFinished(false);
       setIsEdited(false);
     } else if (value === "C") {
-      setInput(input.slice(0, -1));
+      handleBackspace();
     } else if (value === "%") {
       handlePercentage();
     } else if (value === "+/-") {
@@ -618,7 +276,9 @@ function App() {
           expression: currentInput,
           result: finalResult,
           checked: false,
+          deviceId: getDeviceID(),
         };
+
         setHistory((prev) => [newHistoryItem, ...prev]);
       }
 
@@ -672,34 +332,48 @@ function App() {
 
   const buttons = [
     "AC",
-    "C",
-    "%",
     "+/-",
+    "%",
+    "÷",
     "7",
     "8",
     "9",
-    "÷",
+    "×",
     "4",
     "5",
     "6",
-    "×",
+    "-",
     "1",
     "2",
     "3",
-    "-",
+    "+",
     "0",
     ".",
     "=",
-    "+",
   ];
+
+  const classInputText =
+    input.length <= 7
+      ? "input-text"
+      : input.length > 7 && input.length < 9
+        ? "input-text text-average-length"
+        : "input-text text-max-length";
 
   return (
     <div className="container">
       {isOpenHistory ? (
         <div className="history-section">
           <div className="history-header">
-            <h3>Lịch sử</h3>
             <div className="header-actions">
+              <button
+                onClick={() => setIsOpenHistory(false)}
+                className="btn close-history-btn"
+              >
+                <HiMiniArrowLeftStartOnRectangle />
+              </button>
+              <button onClick={handleSelectedAll} className="clear-btn btn">
+                {checkedAll ? <ImCheckboxChecked /> : <ImCheckboxUnchecked />}
+              </button>
               <button
                 onClick={() => setHistory([])}
                 className="clear-btn btn"
@@ -707,16 +381,8 @@ function App() {
               >
                 <ImBin />
               </button>
-              <button onClick={handleSelectedAll} className="clear-btn btn">
-                {checkedAll ? <ImCheckboxChecked /> : <ImCheckboxUnchecked />}
-              </button>
-              <button
-                onClick={() => setIsOpenHistory(false)}
-                className="btn close-history-btn"
-              >
-                <HiMiniArrowLeftStartOnRectangle />
-              </button>
             </div>
+            <h3>Lịch sử</h3>
           </div>
           <div className="summary-box">
             <span>Tổng đã chọn:</span>
@@ -755,7 +421,12 @@ function App() {
         </div>
       ) : (
         <div className="calculator-wrapper">
-          <div className="display">
+          <div
+            className="display"
+            onTouchStart={onTouchStartDisplay}
+            onTouchMove={onTouchMoveDisplay}
+            onTouchEnd={onTouchEndDisplay}
+          >
             <div
               className="open-history"
               onClick={() => setIsOpenHistory(true)}
@@ -766,13 +437,7 @@ function App() {
               <small className="history-text">history</small>
             </div>
 
-            <div
-              className={
-                input.length > 9 ? "input-text text-max-length" : "input-text"
-              }
-            >
-              {formatDisplay(input)}
-            </div>
+            <div className={classInputText}>{formatDisplay(input)}</div>
           </div>
           <div className="keypad">
             {buttons.map((btn, i) => {

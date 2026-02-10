@@ -32,8 +32,10 @@ html,
 /* Container chính chiếm toàn bộ màn hình */
 .container {
   display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   color: var(--text-white);
 }
 
@@ -54,16 +56,20 @@ html,
   align-items: flex-end;
   justify-content: flex-end;
   padding: 20px 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   position: relative;
 }
 
 .input-text {
-  font-size: clamp(3.5rem, 10vw, 6rem); /* Tự động co giãn cỡ chữ */
+  font-size: clamp(4.5rem, 10vw, 6rem); /* Tự động co giãn cỡ chữ */
   font-weight: 400;
   text-align: right;
   word-break: break-all;
   line-height: 1;
+}
+
+.input-text.text-average-length {
+  font-size: clamp(3.5rem, 10vw, 6rem);
 }
 .input-text.text-max-length {
   font-size: clamp(2.5rem, 10vw, 6rem);
@@ -74,7 +80,6 @@ html,
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   width: 100%;
-  margin-bottom: 0.75rem;
 }
 
 .btn {
@@ -82,6 +87,7 @@ html,
   aspect-ratio: 1/1; /* Giữ nút luôn vuông/tròn */
   border-radius: 50%;
   border: none;
+  padding: 0;
   font-size: 2rem;
   cursor: pointer;
   color: var(--text-white);
@@ -111,11 +117,11 @@ html,
 }
 
 .btn-zero {
-  /* grid-column: span 2; */
+  grid-column: span 2;
   aspect-ratio: auto;
   border-radius: 100px;
-  justify-content: center;
-  /* padding-left: 15%; */
+  justify-content: flex-start;
+  padding-left: 15%;
 }
 .open-history {
   width: fit-content;
@@ -164,6 +170,7 @@ html,
 
 .history-header h3 {
   margin: 0;
+  padding-right: 0.5rem;
   font-size: 1.5rem;
 }
 .header-actions {
@@ -275,7 +282,7 @@ html,
   }
 
   .btn {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
   .close-history-btn,
   .open-history-btn {
