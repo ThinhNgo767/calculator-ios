@@ -28,26 +28,34 @@ html,
   font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
   overflow: hidden; /* Ngăn scroll toàn trang */
 }
+.App {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
 
 /* Container chính chiếm toàn bộ màn hình */
 .container {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
   color: var(--text-white);
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 /* --- KHU VỰC MÁY TÍNH (Bên trái) --- */
 .calculator-wrapper {
+  width: 100%;
+  height: 95dvh;
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 40px;
   justify-content: flex-end; /* Đẩy nội dung xuống dưới giống iOS */
   max-width: 600px;
   margin: 0 auto;
+  padding-bottom: 20px;
 }
 
 .display {
@@ -58,6 +66,7 @@ html,
   padding: 20px 10px;
   margin-bottom: 10px;
   position: relative;
+  width: 95%;
 }
 
 .input-text {
@@ -78,8 +87,9 @@ html,
 .keypad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  width: 100%;
+  gap: 12px;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .btn {
@@ -123,26 +133,12 @@ html,
   justify-content: flex-start;
   padding-left: 15%;
 }
-.open-history {
-  width: fit-content;
-  height: auto;
-  position: absolute;
-  left: 0;
-  top: -10%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-}
-.open-history-btn {
-  background-color: transparent;
-  color: var(--text-white);
-  border: none;
-}
-.close-history-btn {
+.btn-color-orange {
   background-color: transparent;
   color: var(--btn-orange);
+  font-size: 2.5rem;
 }
+
 .history-text {
   text-transform: uppercase;
   font-weight: bold;
@@ -153,19 +149,19 @@ html,
 /* --- KHU VỰC LỊCH SỬ (Bên phải) --- */
 .history-section {
   width: 400px;
+  min-height: 90vh;
   background-color: var(--accent-color);
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #333;
-  padding: 20px;
+  border-radius: 15px;
+  padding: 10px 20px;
 }
 
 .history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #333;
+  width: 100%;
+  height: 5dvh;
+  margin: 10px auto;
+  padding: 0 10px;
 }
 
 .history-header h3 {
@@ -174,18 +170,10 @@ html,
   font-size: 1.5rem;
 }
 .header-actions {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  gap: 20px;
-}
-
-.clear-btn {
-  background: none;
-  color: var(--btn-orange);
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 .summary-box {
@@ -220,35 +208,61 @@ html,
 
 .history-item {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 15px;
-  padding: 15px;
+  padding: 8px;
   background: #2c2c2e;
   border-radius: 12px;
   margin-bottom: 10px;
   transition: background 0.2s;
 }
-
+.history-action {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.history-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-top: dashed thin var(--btn-orange);
+  padding: 5px 0;
+}
+.history-content > span:first-child {
+  flex-grow: 2;
+}
+.delete-item {
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  background-color: transparent;
+  color: #ff9f0a;
+  border: none;
+  border-radius: 5px;
+  padding: 2px;
+  margin-left: 5px;
+}
 .history-item:hover {
   background: #3a3a3c;
 }
 
 .history-checkbox {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--btn-orange);
+  width: 25px;
+  height: 25px;
   cursor: pointer;
 }
-
-.history-content {
-  flex: 1;
-  cursor: pointer;
-  text-align: right;
+.history-checkbox:checked {
+  accent-color: var(--btn-orange);
 }
 
 .hist-exp {
   color: #8e8e93;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: 500;
   display: block;
 }
 .hist-res {
@@ -258,34 +272,3 @@ html,
 }
 
 /* --- RESPONSIVE (Cho điện thoại) --- */
-@media (max-width: 850px) {
-  .container {
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .calculator-wrapper {
-    width: 100%;
-    min-height: 100vh; /* Máy tính chiếm trọn màn hình đầu tiên */
-    padding: 20px;
-  }
-
-  .history-section {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid #333;
-    min-height: 100vh;
-  }
-  .history-checkbox {
-    width: 28px;
-    height: 28px;
-  }
-
-  .btn {
-    font-size: 2.4rem;
-  }
-  .close-history-btn,
-  .open-history-btn {
-    font-size: 2.5rem;
-  }
-}
