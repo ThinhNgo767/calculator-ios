@@ -1,6 +1,6 @@
 import "./App.css";
 import Calculator from "./Calculator";
-import LoginPage from "./LoginPage";
+import CurrencyConversion from "./CurrencyConversion";
 
 import { Route, Routes } from "react-router-dom";
 
@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Calculator />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/currency" element={<CurrencyConversion />} />
       </Routes>
     </div>
   );

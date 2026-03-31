@@ -44,6 +44,12 @@ html,
   align-items: center;
   height: 100%;
 }
+.open-history {
+  width: calc(100% - 20px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 /* --- KHU VỰC MÁY TÍNH (Bên trái) --- */
 .calculator-wrapper {
@@ -138,6 +144,9 @@ html,
   color: var(--btn-orange);
   font-size: 2.5rem;
 }
+.open-currency-btn {
+  font-size: 2rem;
+}
 
 .history-text {
   text-transform: uppercase;
@@ -177,9 +186,12 @@ html,
 }
 
 .summary-box {
-  margin: 20px 0;
+  position: relative;
+  overflow: hidden;
+  margin: 10px 0;
   background: linear-gradient(135deg, #ff9f0a, #ffb340);
-  padding: 20px;
+  height: 60px;
+  padding: 5px 15px;
   border-radius: 15px;
   color: #000;
   display: flex;
@@ -189,6 +201,33 @@ html,
 
 .summary-box strong {
   font-size: 1.4rem;
+}
+
+.shine {
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shineMove 3s ease-in-out infinite;
+}
+
+@keyframes shineMove {
+  0% {
+    left: -50%;
+  }
+  20% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 .history-list {
@@ -272,3 +311,130 @@ html,
 }
 
 /* --- RESPONSIVE (Cho điện thoại) --- */
+.container-currentcy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80dvh;
+}
+.transform {
+  width: 90%;
+  height: 40px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 5px;
+}
+.transform :where(.custom-select, button) {
+  display: inline-block;
+  height: 100%;
+  flex-grow: 1;
+  font-size: 1rem;
+}
+.transform select {
+  width: 100%;
+  text-align: center;
+  color: #222;
+}
+
+.transform button {
+  background-color: #555;
+  color: var(--btn-orange);
+  border: none;
+  font-size: 1.5rem;
+}
+.transform small {
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.data-trans {
+  width: 90%;
+  height: 35px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+.data-trans :where(input, button) {
+  height: 100%;
+}
+.data-trans input {
+  flex-grow: 2;
+  padding-left: 8px;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  font-size: 1rem;
+}
+.data-trans button {
+  border: none;
+  flex-grow: 1;
+  background-color: #555;
+  color: #ff9f0a;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.result {
+  margin: 1rem auto;
+}
+.result > p {
+  font-size: 1.2rem;
+}
+/*  */
+.custom-select {
+  position: relative;
+  width: 100px;
+}
+
+.custom-select .selected {
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #fff;
+  height: 100%;
+  align-content: center;
+  padding-left: 5px;
+}
+
+.custom-select ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  position: absolute;
+  width: 100%;
+  background: #fff;
+  z-index: 10;
+}
+
+.custom-select ul li {
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+
+.custom-select ul li:hover {
+  background: rgba(255, 159, 10, 0.5);
+}
+.custom-select ul li span {
+  line-height: 1;
+}
+.custom-select ul li small {
+  font-size: 12px;
+  color: gray;
+}
+button.icon-arrow {
+  background-color: transparent;
+  position: absolute;
+  top: 5%;
+  right: 0;
+}
+.back-calculator {
+  display: inline-block;
+  padding: 10px;
+  color: var(--btn-orange);
+  font-weight: bold;
+}

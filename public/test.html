@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .progress {
+        width: 300px;
+        height: 20px;
+        background: #444;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        width: 70%; /* phần trăm tiến trình */
+        height: 20px;
+        background: #4caf50;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .shine {
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          120deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.6) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        animation: shineMove 4s ease-in-out infinite;
+      }
+
+      @keyframes shineMove {
+        0% {
+          left: -50%;
+        }
+        20% {
+          left: 100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-bar">
+      <div class="shine"></div>
+    </div>
+  </body>
+</html>

@@ -1,9 +1,11 @@
 import DeviceFingerprint from "./utils/deviceFingerprint";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
 
 import {
   MdManageHistory,
+  MdCurrencyExchange,
   MdOutlineCalculate,
   MdOutlineCheckBox,
   MdOutlineCheckBoxOutlineBlank,
@@ -32,6 +34,8 @@ function Calculator() {
   const [touchEnd, setTouchEnd] = useState(null);
 
   const pressTimerRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const decimal = selectedSum.toString().includes(".");
 
@@ -462,12 +466,20 @@ function Calculator() {
             </button>
           </div>
         ) : (
-          <div className="open-history" onClick={() => setIsOpenHistory(true)}>
+          <div className="open-history">
             <button
               className="btn open-history-btn btn-color-orange"
               title="Go to history"
+              onClick={() => setIsOpenHistory(true)}
             >
               <MdManageHistory />
+            </button>
+            <button
+              className="btn open-currency-btn btn-color-orange"
+              title="Go to history"
+              onClick={() => navigate("/currency")}
+            >
+              <MdCurrencyExchange />
             </button>
           </div>
         )}
@@ -483,6 +495,7 @@ function Calculator() {
                   ? formatDisplay(selectedSum.toFixed(2).toString())
                   : formatDisplay(selectedSum.toString())}
               </strong>
+              <div className="shine"></div>
             </div>
             <div className="history-list">
               {history.length === 0 && <p className="empty-msg">Trống</p>}
